@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message For You, Aarya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #120e0c;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            position: relative;
+            perspective: 1800px;
+            padding: 15px;
+        }
+
+        /* Ambient Therapeutic Backdrop */
+        #petal-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .petal {
+            position: absolute;
+            background: linear-gradient(to bottom right, #a71d2a, #690b14);
+            border-radius: 15px 2px 15px 2px;
+            opacity: 0.5;
+            animation: floatDown linear infinite;
+        }
+
+        @keyframes floatDown {
+            0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ==========================================================================
+           PHASE 1: THE LUXURY ENVELOPE INTERACTION
+           ========================================================================== */
+        .envelope-wrapper {
+            position: relative;
+            width: 480px;
+            height: 330px;
+            background: #26201c;
+            border-radius: 6px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.7);
+            cursor: pointer;
+            z-index: 10;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+        .envelope-wrapper:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        /* Front flaps of the envelope */
+        .envelope-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 165px 240px 165px 0;
+            border-color: transparent #2f2723 transparent transparent;
+            z-index: 3;
+            border-radius: 0 6px 6px 0;
+        }
+        .envelope-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 165px 0 165px 240px;
+            border-color: transparent transparent transparent #2f2723;
+            z-index: 3;
+            border-radius: 6px 0 0 6px;
+        }
+
+        .envelope-bottom {
+            position: absolute;
+            bottom: 0; left: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 240px 180px 240px;
+            border-color: transparent transparent #382e29 transparent;
+            z-index: 4;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .envelope-top {
+            position: absolute;
+            top: 0; left: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 180px 240px 0 240px;
+            border-color: #3f352f transparent transparent transparent;
+            z-index: 5;
+            transform-origin: top center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 6px 6px 0 0;
+        }
+
+        /* Custom Wax Seal Badge */
+        .wax-seal {
+            position: absolute;
+            top: 155px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 55px;
+            height: 55px;
+            background: radial-gradient(circle, #9c1c26 40%, #701018 100%);
+            border-radius: 50%;
+            z-index: 6;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #dfbda3;
+            font-size: 1.1rem;
+            transition: opacity 0.4s ease 0.1s, transform 0.4s ease;
+        }
+
+        /* Envelope Open Trigger States */
+        .envelope-wrapper.open .envelope-top {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+        .envelope-wrapper.open .wax-seal {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+            pointer-events: none;
+        }
+
+        /* ==========================================================================
+           PHASE 2: THE MAIN INTERACTIVE PRESENTATION CARD
+           ========================================================================== */
+        .main-card {
+            max-width: 950px;
+            width: 100%;
+            height: 600px;
+            background: #fdfcf9;
+            border-radius: 16px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            overflow: hidden;
+            position: absolute;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(100px) scale(0.9);
+            pointer-events: none;
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease;
+        }
+
+        .main-card.reveal {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        /* Left Column Panel: The Letter Content */
+        .letter-panel {
+            padding: 50px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid #efebe4;
+            overflow-y: auto;
+            background: #fdfcf9;
+        }
+
+        .salutation {
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #c9a074;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .message-body {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.1rem;
+            line-height: 1.35;
+            color: #231d19;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .personal-note {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #554e48;
+            margin-bottom: 20px;
+        }
+
+        /* Right Column Panel: Interactive Image Frame Deck Carousel */
+        .gallery-panel {
+            background: #f7f5f0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .carousel-viewport {
+            width: 100%;
+            height: 410px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Stacked Polaroid Card Layers */
+        .polaroid-card {
+            position: absolute;
+            background: #ffffff;
+            padding: 14px 14px 35px 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px solid #eae5db;
+            width: 300px;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, z-index 0s;
+            opacity: 0;
+            transform: scale(0.8) translateY(30px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .polaroid-card img, .polaroid-card video {
+            width: 100%;
+            height: 330px;
+            object-fit: cover;
+            display: block;
+            border-radius: 2px;
+        }
+
+        /* Interactive Polaroid Carousel Core States */
+        .polaroid-card.active {
+            opacity: 1;
+            transform: scale(1) translateY(0) rotate(-1.5deg);
+            z-index: 5;
+            pointer-events: auto;
+        }
+        .polaroid-card.next-stack {
+            opacity: 0.4;
+            transform: scale(0.92) translateY(15px) rotate(2deg);
+            z-index: 4;
+        }
+        .polaroid-card.passed {
+            opacity: 0;
+            transform: translateX(-150%) rotate(-15deg);
+            pointer-events: none;
+        }
+
+        /* Carousel Modern Navigation Architecture */
+        .gallery-controls {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-top: 25px;
+            z-index: 10;
+        }
+
+        .control-arrow {
+            background: #ffffff;
+            border: 1px solid #eae5db;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #4a3f35;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .control-arrow:hover:not(:disabled) {
+            background: #231d19;
+            color: #ffffff;
+            border-color: #231d19;
+        }
+        .control-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .gallery-indicator {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #a39585;
+            font-weight: 600;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE RE-ENGINEERING SYSTEM (MOBILE & TABLET)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .envelope-wrapper {
+                width: 92vw;
+                height: 63vw;
+            }
+            .envelope-wrapper::before { border-width: 31.5vw 46vw 31.5vw 0; }
+            .envelope-wrapper::after { border-width: 31.5vw 0 31.5vw 46vw; }
+            .envelope-bottom { border-width: 0 46vw 35vw 46vw; }
+            .envelope-top { border-width: 35vw 46vw 0 46vw; }
+            .wax-seal { top: 30vw; width: 46px; height: 46px; font-size: 0.9rem; }
+
+            .main-card {
+                grid-template-columns: 1fr;
+                height: 84vh;
+                max-height: 680px;
+                top: auto;
+            }
+
+            .letter-panel {
+                padding: 25px 30px;
+                order: 2; /* Content flows nicely underneath the visual element on mobile screens */
+                overflow-y: auto;
+            }
+
+            .message-body { font-size: 1.5rem; margin-bottom: 15px; }
+            .personal-note { font-size: 0.88rem; line-height: 1.6; }
+
+            .gallery-panel {
+                padding: 20px 20px 15px 20px;
+                order: 1;
+                border-bottom: 1px solid #efebe4;
+            }
+
+            .carousel-viewport { height: 230px; }
+            .polaroid-card { width: 175px; padding: 8px 8px 22px 8px; }
+            .polaroid-card img, .polaroid-card video { height: 190px; }
+            .gallery-controls { margin-top: 15px; gap: 15px; }
+            .control-arrow { width: 36px; height: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Calm Air Particles Container -->
+    <div id="petal-container"></div>
+
+    <!-- STAGE 1: CINEMATIC OPENING ENVELOPE -->
+    <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+        <div class="envelope-top"></div>
+        <div class="wax-seal">✦</div>
+        <div class="envelope-bottom"></div>
+    </div>
+
+    <!-- STAGE 2: AD-FREE CUSTOM CARD PLATFORM FRAME -->
+    <div class="main-card" id="letterCard">
+        
+        <!-- Left Side: Custom Comfort Text Entry -->
+        <div class="letter-panel">
+            <div class="salutation">For You, Aarya</div>
+            <div class="message-body">
+                "The heaviest clouds will start to clear, I promise you the dawn is near. Just let your hurting spirit rest, you've fought so hard and given your best."
+            </div>
+            <div class="personal-note">
+                I know it feels impossibly heavy right now, but it's completely okay to feel hurt. Your heart has carried a lot, and right now, it just deserves gentle care and room to breathe.
+            </div>
+            <div class="personal-note" style="font-weight: 500; color: #231d19;">
+                Closing this door takes immense courage. Your choice to step away isn't a failure—it is a brave act of protection. You never have to walk through any of this alone. I have always got your back.
+            </div>
+        </div>
+
+        <!-- Right Side: Clean Carousel Deck Framework -->
+        <div class="gallery-panel">
+            <div class="carousel-viewport">
+                
+                <!-- Polaroid Photo Stack Entries with Robust Auto-Recovery Script Fallbacks -->
+                <div class="polaroid-card active">
+                    <img src="1.jpeg" alt="Memory" onerror="this.onerror=null; this.src='1.jpg';">
+                </div>
+                <div class="polaroid-card next-stack">
+                    <img src="2.jpeg" alt="Memory" onerror="this.onerror=null; this.src='2.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="3.jpeg" alt="Memory" onerror="this.onerror=null; this.src='3.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="4.jpeg" alt="Memory" onerror="this.onerror=null; this.src='4.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="5.jpeg" alt="Memory" onerror="this.onerror=null; this.src='5.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="6.jpeg" alt="Memory" onerror="this.onerror=null; this.src='6.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="7.jpeg" alt="Memory" onerror="this.onerror=null; this.src='7.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="8.jpeg" alt="Memory" onerror="this.onerror=null; this.src='8.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="9.jpeg" alt="Memory" onerror="this.onerror=null; this.src='9.jpg';">
+                </div>
+                <div class="polaroid-card">
+                    <img src="12.jpeg" alt="Memory" onerror="this.onerror=null; this.src='12.jpg';">
+                </div>
+                
+                <!-- Terminal Dedicated Premium Video Container Placement Loop -->
+                <div class="polaroid-card">
+                    <video src="my_video.mp4" autoplay loop muted playsinline></video>
+                </div>
+
+            </div>
+
+            <!-- Carousel Display Nav Elements Bar -->
+            <div class="gallery-controls">
+                <button class="control-arrow" id="carouselPrev" onclick="stepCarousel(-1)" disabled>❮</button>
+                <div class="gallery-indicator" id="carouselCounter">1 / 11</div>
+                <button class="control-arrow" id="carouselNext" onclick="stepCarousel(1)">❯</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Opening Reveal Pipeline Orchestration
+        function openEnvelope() {
+            const env = document.getElementById('envelope');
+            const card = document.getElementById('letterCard');
+            
+            env.classList.add('open');
+            
+            // Stagger transition sequences smoothly
+            setTimeout(() => {
+                env.style.opacity = '0';
+                env.style.transform = 'translateY(-80px) scale(0.85)';
+                env.style.pointerEvents = 'none';
+            }, 650);
+
+            setTimeout(() => {
+                card.classList.add('reveal');
+            }, 950);
+        }
+
+        // Optimized Linear Gallery Deck Loop Controller Mechanics
+        const cards = document.querySelectorAll('.polaroid-card');
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+        const counterDisplay = document.getElementById('carouselCounter');
+        let cardIndex = 0;
+
+        function stepCarousel(direction) {
+            // Housekeep boundary checks safely
+            if ((direction === 1 && cardIndex >= cards.length - 1) || (direction === -1 && cardIndex <= 0)) return;
+
+            cardIndex += direction;
+
+            cards.forEach((item, idx) => {
+                item.className = 'polaroid-card'; // Flush classes clean
+
+                if (idx === cardIndex) {
+                    item.classList.add('active');
+                    // Dynamic Autoplay check optimization routines for Video node triggers
+                    const videoNode = item.querySelector('video');
+                    if (videoNode) {
+                        videoNode.currentTime = 0;
+                        videoNode.play().catch(e => console.log("Video track awake:", e));
+                    }
+                } else if (idx === cardIndex + 1) {
+                    item.classList.add('next-stack');
+                } else if (idx < cardIndex) {
+                    item.classList.add('passed');
+                }
+            });
+
+            // Re-render UI controls indicators seamlessly
+            counterDisplay.innerText = `${cardIndex + 1} / ${cards.length}`;
+            prevBtn.disabled = cardIndex === 0;
+            nextBtn.disabled = cardIndex === cards.length - 1;
+        }
+
+        // Ambient Falling Botanical Generator Node Elements Functions Loops
+        const petalContainer = document.getElementById('petal-container');
+        function spawnPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            const size = Math.random() * 14 + 10;
+            petal.style.width = `${size}px`;
+            petal.style.height = `${size}px`;
+            petal.style.left = `${Math.random() * 100}%`;
+            const speed = Math.random() * 5 + 6;
+            petal.style.animationDuration = `${speed}s`;
+            petal.style.animationDelay = `${Math.random() * 3}s`;
+
+            petalContainer.appendChild(petal);
+            setTimeout(() => { petal.remove(); }, (speed + 3) * 1000);
+        }
+
+        for (let i = 0; i < 18; i++) { spawnPetal(); }
+        setInterval(spawnPetal, 500);
+    </script>
+</body>
+</html>
