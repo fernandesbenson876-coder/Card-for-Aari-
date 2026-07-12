@@ -25,7 +25,7 @@
             padding: 15px;
         }
 
-        /* Ambient Therapeutic Backdrop */
+        /* Ambient Therapeutic Backdrop Particles */
         #petal-container {
             position: absolute;
             top: 0;
@@ -135,7 +135,6 @@
             transition: opacity 0.4s ease 0.1s, transform 0.4s ease;
         }
 
-        /* Envelope Open Trigger States */
         .envelope-wrapper.open .envelope-top {
             transform: rotateX(180deg);
             z-index: 1;
@@ -152,7 +151,7 @@
         .main-card {
             max-width: 950px;
             width: 100%;
-            height: 580px;
+            height: 590px;
             background: #fdfcf9;
             border-radius: 16px;
             box-shadow: 0 30px 80px rgba(0,0,0,0.6);
@@ -173,7 +172,7 @@
             pointer-events: auto;
         }
 
-        /* Left Column: The Letter Content */
+        /* Left Column: Letter Content */
         .letter-panel {
             padding: 50px 60px;
             display: flex;
@@ -219,7 +218,6 @@
             transition: all 0.6s ease 0.7s;
         }
 
-        /* Trigger active entry text animations once revealed */
         .main-card.reveal .salutation,
         .main-card.reveal .message-body,
         .main-card.reveal .personal-note {
@@ -227,38 +225,92 @@
             transform: translateY(0);
         }
 
-        /* Right Column: Single Polaroid Presentation Display */
+        /* Right Column: Toss & Scatter Stack Presentation Deck */
         .gallery-panel {
             background: #f7f5f0;
             padding: 40px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
         }
 
-        .polaroid-frame {
-            background: #ffffff;
-            padding: 16px 16px 40px 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.07);
-            border: 1px solid #eae5db;
+        .stack-wrapper {
+            position: relative;
             width: 310px;
-            transform: translateY(30px) rotate(1.5deg);
-            opacity: 0;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.4s, opacity 0.8s ease 0.4s;
+            height: 410px;
+            cursor: pointer;
         }
 
-        .main-card.reveal .polaroid-frame {
-            opacity: 1;
-            transform: translateY(0) rotate(-2deg); /* Beautiful artistic slant */
-        }
-
-        .polaroid-frame img {
+        /* The Custom Polaroid Layers Layout */
+        .polaroid-card {
+            position: absolute;
+            background: #ffffff;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px solid #eae5db;
             width: 100%;
-            height: 350px;
+            height: 100%;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease, z-index 0s 0.2s;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .polaroid-card img {
+            width: 100%;
+            height: 335px;
             object-fit: cover;
             display: block;
             border-radius: 2px;
+            pointer-events: none;
+        }
+
+        /* Staggered Scattered Positional States mapped out via data attributes */
+        .polaroid-card[data-pos="0"] {
+            z-index: 4;
+            transform: translate(0, 0) rotate(-2.5deg);
+            opacity: 1;
+        }
+        .polaroid-card[data-pos="1"] {
+            z-index: 3;
+            transform: translate(6px, 8px) rotate(3deg);
+            opacity: 0.95;
+        }
+        .polaroid-card[data-pos="2"] {
+            z-index: 2;
+            transform: translate(-8px, 4px) rotate(-1.5deg);
+            opacity: 0.9;
+        }
+        .polaroid-card[data-pos="3"] {
+            z-index: 1;
+            transform: translate(4px, -6px) rotate(4deg);
+            opacity: 0.85;
+        }
+
+        /* Tactile Toss Flick Out Effect CSS Trigger */
+        .polaroid-card.tossing {
+            transform: translate(150%, 40px) rotate(25deg) scale(0.95) !important;
+            opacity: 0 !important;
+            z-index: 5 !important;
+            transition: transform 0.35s ease-in, opacity 0.35s ease-in;
+        }
+
+        /* Gentle Interactive Stack Hint */
+        .stack-hint {
+            margin-top: 25px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #a39585;
+            font-weight: 600;
+            animation: pulseGlow 2s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 0.9; transform: scale(1); }
         }
 
         /* ==========================================================================
@@ -277,29 +329,38 @@
 
             .main-card {
                 grid-template-columns: 1fr;
-                height: 85vh;
-                max-height: 680px;
+                height: 86vh;
+                max-height: 690px;
             }
 
             .gallery-panel {
-                padding: 30px 20px 20px 20px;
-                order: 1; /* Image stays engagingly at the top on phone screens */
+                padding: 35px 20px 20px 20px;
+                order: 1; /* Puts the interactive stack engagingly at the top on phone displays */
                 border-bottom: 1px solid #efebe4;
             }
 
-            .polaroid-frame {
-                width: 200px;
-                padding: 10px 10px 24px 10px;
+            .stack-wrapper {
+                width: 190px;
+                height: 250px;
             }
 
-            .polaroid-frame img {
-                height: 220px;
+            .polaroid-card {
+                padding: 10px 10px 26px 10px;
+            }
+
+            .polaroid-card img {
+                height: 200px;
+            }
+
+            .stack-hint {
+                margin-top: 15px;
+                font-size: 0.65rem;
             }
 
             .letter-panel {
                 padding: 30px 25px;
                 order: 2;
-                overflow-y: auto; /* Fluid text scrolling safety built directly in */
+                overflow-y: auto; /* Built-in smooth text scrolling security */
                 justify-content: flex-start;
             }
 
@@ -310,7 +371,7 @@
 </head>
 <body>
 
-    <!-- Ambient Calm Falling Petals -->
+    <!-- Ambient Falling Particles Container -->
     <div id="petal-container"></div>
 
     <!-- STAGE 1: THE LUXURY ENVELOPE -->
@@ -320,10 +381,10 @@
         <div class="envelope-bottom"></div>
     </div>
 
-    <!-- STAGE 2: THE POLISHED MAIN CARD DISPLAY -->
+    <!-- STAGE 2: THE POLISHED DISCOVERABLE INTERACTIVE DISPLAY CARD -->
     <div class="main-card" id="letterCard">
         
-        <!-- Left Side: Comfort Message Letter Split -->
+        <!-- Left Column Split: Letter Text Content Area -->
         <div class="letter-panel">
             <div class="salutation">For You, Aarya</div>
             <div class="message-body">
@@ -337,17 +398,31 @@
             </div>
         </div>
 
-        <!-- Right Side: Clean Singular Polaroid Presentation Frame -->
+        <!-- Right Column Split: Toss & Scatter Dynamic Photo Deck Stack -->
         <div class="gallery-panel">
-            <div class="polaroid-frame">
-                <!-- Dual Fallback Engine automatically maps both .jpg and .jpeg configurations seamlessly -->
-                <img src="photo.jpg" alt="A Precious Memory" onerror="this.onerror=null; this.src='photo.jpeg';">
+            <div class="stack-wrapper" onclick="tossTopCard()">
+                
+                <!-- Dual Fallback Engine automatically maps both .jpg and .jpeg seamless structural configurations -->
+                <div class="polaroid-card" data-pos="0">
+                    <img src="pic1.jpg" alt="Memory" onerror="this.onerror=null; this.src='pic1.jpeg';">
+                </div>
+                <div class="polaroid-card" data-pos="1">
+                    <img src="pic2.jpg" alt="Memory" onerror="this.onerror=null; this.src='pic2.jpeg';">
+                </div>
+                <div class="polaroid-card" data-pos="2">
+                    <img src="pic3.jpg" alt="Memory" onerror="this.onerror=null; this.src='pic3.jpeg';">
+                </div>
+                <div class="polaroid-card" data-pos="3">
+                    <img src="pic4.jpg" alt="Memory" onerror="this.onerror=null; this.src='pic4.jpeg';">
+                </div>
+
             </div>
+            <div class="stack-hint">Tap stack to scatter ✦</div>
         </div>
     </div>
 
     <script>
-        // Opening Envelope Pipeline Orchestration
+        // Opening Envelope Transition Sequence Engine
         function openEnvelope() {
             const env = document.getElementById('envelope');
             const card = document.getElementById('letterCard');
@@ -365,7 +440,35 @@
             }, 850);
         }
 
-        // Ambient Background Particle Generator Engine
+        // Tactile Linear Pile Tossing Mechanism Script logic
+        let isTossing = false;
+
+        function tossTopCard() {
+            if (isTossing) return;
+            isTossing = true;
+
+            // Target the absolute top card configuration sequence safely
+            const topCard = document.querySelector('.polaroid-card[data-pos="0"]');
+            if (!topCard) { isTossing = false; return; }
+
+            topCard.classList.add('tossing');
+
+            // Wait for the slide out swing animation timeline to conclude
+            setTimeout(() => {
+                const allCards = document.querySelectorAll('.polaroid-card');
+                allCards.forEach(card => {
+                    let currentPos = parseInt(card.getAttribute('data-pos'));
+                    // Shift indices mathematically: 0 moves to bottom (3), others jump up closer to surface
+                    let nextPos = (currentPos - 1 + 4) % 4;
+                    card.setAttribute('data-pos', nextPos);
+                });
+
+                topCard.classList.remove('tossing');
+                isTossing = false;
+            }, 350);
+        }
+
+        // Ambient Background Particle Rendering System
         const petalContainer = document.getElementById('petal-container');
         function spawnPetal() {
             const petal = document.createElement('div');
